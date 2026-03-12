@@ -1,10 +1,22 @@
-// --- Initial Data ---
+const adLinks = [
+    "https://www.effectivegatecpm.com/szaxcfckwf?key=16135805dc97698328fbcff487238624",
+    "https://omg10.com/4/10716564"
+];
+let clickCount = 0;
 const femaleNames = ["Maria", "Ana", "Alice", "Helena", "Valentina", "Fernanda", "Juliana", "Sophia", "Amanda", "Letícia"];
 
-// --- Helper: Create Card ---
+// --- REFINED AD LOGIC ---
+window.trackAdClick = function() {
+    clickCount++;
+    // Opens an ad on the 1st, 4th, 7th... click
+    if (clickCount % 3 === 1) {
+        const ad = adLinks[Math.floor(Math.random() * adLinks.length)];
+        window.open(ad, '_blank');
+    }
+};
+
 function createCard() {
     const randomNum = Math.floor(Math.random() * 20) + 1;
-    // Fallback image if local photo fails
     const imgUrl = `img/foto${randomNum}.jpg`; 
     const backupUrl = `https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400`;
     const name = femaleNames[Math.floor(Math.random() * femaleNames.length)];
@@ -20,20 +32,14 @@ function createCard() {
     return card;
 }
 
-// --- App Control Functions ---
 window.swipe = function(isLike) {
     const stack = document.getElementById('card-stack');
     const cards = stack.querySelectorAll('.card');
     const topCard = cards[cards.length - 1];
-
     if (!topCard) return;
 
     topCard.style.transform = isLike ? "translateX(200%) rotate(30deg)" : "translateX(-200%) rotate(-30deg)";
     topCard.style.opacity = "0";
-
-    if (isLike && Math.random() > 0.5) {
-        document.getElementById('match-popup').style.display = 'flex';
-    }
     
     setTimeout(() => {
         topCard.remove();
@@ -50,15 +56,9 @@ window.showView = function(id, navEl) {
     }
 };
 
-window.closeMatch = function() {
-    document.getElementById('match-popup').style.display = 'none';
-};
-
-// --- CRITICAL: Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     const stack = document.getElementById('card-stack');
     if (stack) {
-        // Initial cards load
         for (let i = 0; i < 3; i++) {
             stack.prepend(createCard());
         }
